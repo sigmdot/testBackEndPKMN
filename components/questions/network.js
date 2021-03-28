@@ -1,0 +1,66 @@
+const express = require("express");
+
+const response = require("../../network/response");
+const Controller = require("./controller");
+
+const router = express.Router();
+
+router.get("/", list);
+router.get("/:id", filterID);
+router.get("/random/:number",getByRandomNumber);
+
+router.post("/", post);
+
+router.patch("/:id", patch);
+
+function list(req, res, next) {
+  Controller.list()
+    .then((questions) => {
+      response.succes(req, res, questions, 200);
+    })
+    .catch((e) => {
+      response.error(req, res, "Error en el servidor", 500);
+    });
+}
+
+function filterID(req, res, next) {
+  Controller.filtById(req.params.id)
+    .then((user) => {
+      response.succes(req, res, user, 200);
+    })
+    .catch((e) => {
+      response.error(req, res, e, 500);
+    });
+}
+
+function getByRandomNumber(req, res, next) {
+  Controller.getByNrandom(req.params.number)
+    .then((questions) => {
+      response.succes(req, res, questions, 201);
+    })
+    .catch((e) => {
+      response.error(req, res, e, 500);
+    });
+}
+
+function post(req, res, next) {
+  Controller.post(req.body)
+    .then((user) => {
+      response.succes(req, res, user, 201);
+    })
+    .catch((e) => {
+      response.error(req, res, e, 500);
+    });
+}
+
+function patch(req, res, next) {
+  Controller.patchData(req.params.id, req.body)
+    .then((user) => {
+      response.succes(req, res, user, 201);
+    })
+    .catch((e) => {
+      response.error(req, res, e, 500);
+    });
+}
+
+module.exports = router;
